@@ -36,8 +36,19 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         newMustache.tag = 34
         myImageView.addSubview(newMustache)
         
+        // programmitically make pan gesture
+        
+        let pan = UIPanGestureRecognizer(target: self, action: #selector(mustachePanned(_:)))
+        newMustache.addGestureRecognizer(pan)
+        newMustache.isUserInteractionEnabled = true
+        
     }
     
+    @objc func mustachePanned(_ sender: UIPanGestureRecognizer)
+    {
+        let mustache = sender.view
+        mustache?.center = sender.location(in: myImageView)
+    }
 
     @IBAction func cameraButtonSelected(_ sender: UIBarButtonItem) {
         
@@ -108,7 +119,20 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     // To Do :  Add ImagePicker Methods
     
     // Make sure you add privacy warnings on info.plist
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController)
+    {
+        dismiss(animated: true, completion: nil)
+    }
     
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        print(info)
+        
+        if let myImage = info[UIImagePickerControllerOriginalImage] as? UIImage
+        {
+            myImageView.image = myImage
+        }
+        dismiss(animated: true, completion: nil)
+    }
     
 }
 
